@@ -158,9 +158,19 @@ exception | If we expect a transaction to fail then we can also specify the expe
 For our tutorial we will be focusing on the ```sender``` , ```amount```, ```now```, ```valid``` , ```show``` parameters.
 
 # Unit Tests
-Now we need to create transactions which would test all the functionalities of our contract. My advice here is to proceed by isolating an EntryPoint and then testing all it's variables and then moving on to the next EntryPoint:
+We write all our verifying conditions in the contract and create transactions which would test all the functionalities of our contract. 
+My advice here is to proceed by isolating an EntryPoint and then testing all it's variables and then moving on to the next EntryPoint:
 
-- 
+- ```addBalanceOwner()```
+```python
+ob.addBalanceOwner().run(sender=udit , amount = sp.tez(25) , valid = False)
+ob.addBalanceOwner().run(sender=bob , amount = sp.tez(1) , valid = False)
+
+ob.addBalanceOwner().run(sender = bob, amount = sp.tez(25))
+
+ob.addBalanceOwner().run(sender = bob , amount = sp.tez(25) , valid = False)
+```
+As we can see in the first statement we are testing our entrypoint by sending *udit*
 
 # Conclusion
 
