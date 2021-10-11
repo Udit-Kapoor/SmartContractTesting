@@ -193,6 +193,38 @@ ob.addBalanceCounterparty().run(sender = udit, amount = sp.tez(5) , valid = Fals
 3. The third transaction has both the counter party and stake amount correct and we expect it to be a valid transaction.
 4. In the fourth transaction evn though all the parameters are correct , the counter arty has already staked once in the contract and can not stake again. Hence, we expect our transaction to fail and have **valid** set as **False**.
 
+- ```claimCounterparty()```
+```python
+#claimCounterparty Tests
+ob.claimCounterparty(secret = s).run(sender = bob , valid = False)
+ob.claimCounterparty(secret = sp.bytes("0x01223343")).run(sender = udit, valid = False)
+ob.claimCounterparty(secret = s).run(sender = udit , now = sp.timestamp(1635192186) , valid=False)
+
+ 
+ob.claimCounterparty(secret = s).run(sender = udit)
+```
+###Faults
+1. In the first transaction we are sending bob as the **sender** who is not the counter party. Hence, we expect our transaction to fail and have **valid** set as **False**.
+2. In the second transaction we are sending the wrong secret key. Hence, we expect our transaction to fail and have **valid** set as **False**.
+3. The third transaction has both the counter party and secret key correct but the timestamp is for 25th October 2021 which is past our deadline set during origination.
+4. The fourth transaction has everything in order and hence is a valid transaction.
+
+- ```claimOwner()```
+```python
+#claimOwner Tests
+ob.claimOwner().run(sender = udit , valid = False)
+ob.claimOwner().run(sender = bob, valid=False)
+
+ 
+ob.claimOwner().run(sender = bob ,now = sp.timestamp(1635192186) )
+```
+###Faults
+1. In the first transaction we are sending udit as the **sender** who is not the owner. Hence, we expect our transaction to fail and have **valid** set as **False**.
+2. The second transaction has the correct **sender** but the time limit has not yet expired. Hence, we expect our transaction to fail and have **valid** set as **False**.
+3. The third transaction has everything in order and hence is a valid transaction with the timestamp simulated as of 25th October 2021.
+
+
+
 
 # Conclusion
 
