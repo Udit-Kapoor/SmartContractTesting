@@ -163,6 +163,7 @@ My advice here is to proceed by isolating an EntryPoint and then testing all it'
 
 - ```addBalanceOwner()```
 ```python
+#addBalanceOwner Tests
 ob.addBalanceOwner().run(sender=udit , amount = sp.tez(25) , valid = False)
 ob.addBalanceOwner().run(sender=bob , amount = sp.tez(1) , valid = False)
 
@@ -170,7 +171,28 @@ ob.addBalanceOwner().run(sender = bob, amount = sp.tez(25))
 
 ob.addBalanceOwner().run(sender = bob , amount = sp.tez(25) , valid = False)
 ```
-As we can see in the first statement we are testing our entrypoint by sending *udit*
+###Faults
+1. In the first transaction we are sending **udit** as the **sender** who we have set as **CounterParty**. Hence, we expect our transaction to fail and have **valid** set as **False**.
+2. In the second transaction we are sending ```sp.tez(1)``` as the owner's stake which we have set as 25 XTZ. Hence, we expect our transaction to fail and have **valid** set as **False**.
+3. The third transaction has both the owner and stake amount correct and we expect it to be a valid transaction.
+4. In the fourth transaction evn though all the parameters are correct , the owner has already staked once in the contract and can not stake again. Hence, we expect our transaction to fail and have **valid** set as **False**.
+
+- ```addBalanceCounterparty()```
+```python
+#addBalanceCounterparty Tests
+ob.addBalanceCounterparty().run(sender=bob , amount = sp.tez(5) , valid = False)
+ob.addBalanceCounterparty().run(sender=udit , amount = sp.tez(25) , valid = False)
+
+ob.addBalanceCounterparty().run(sender = udit, amount = sp.tez(5))
+
+ob.addBalanceCounterparty().run(sender = udit, amount = sp.tez(5) , valid = False)
+```
+###Faults
+1. In the first transaction we are sending **bob** as the **sender** who we have set as **Owner**. Hence, we expect our transaction to fail and have **valid** set as **False**.
+2. In the second transaction we are sending ```sp.tez(25)``` as the counter party's stake which we have set as 5 XTZ. Hence, we expect our transaction to fail and have **valid** set as **False**.
+3. The third transaction has both the counter party and stake amount correct and we expect it to be a valid transaction.
+4. In the fourth transaction evn though all the parameters are correct , the counter arty has already staked once in the contract and can not stake again. Hence, we expect our transaction to fail and have **valid** set as **False**.
+
 
 # Conclusion
 
