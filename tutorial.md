@@ -1,6 +1,6 @@
 # Introduction
-Hey Reader! Welcome to this Tutorial on How to write, deploy & interact with a smart contract on Tezos in SmartPy. We will be learing a lot and having fun alongside!
-You will be able to understand the industry standards of coding on SmartPy and be able to deploy your own Calculator Smart Contract whilist Understading the code as well.
+Hey Reader! Welcome to this Tutorial on Testing a smart contract on Tezos in SmartPy. We will be learning how to run unit tests and make sure our code works before deployment because once deployed, smart contracts are immutable (and we do not want to waste our XTZ tokens).
+
 
 - Tezos is an open-source blockchain protocol for assets and applications backed by a global community of validators, researchers, and builders. The Tezos protocol is secure, upgradable, and built to last.
 - SmartPy is an intuitive and powerful smart contract development platform for Tezos and is available through a Python library for building and analyzing Tezos smart contracts.
@@ -8,12 +8,21 @@ You will be able to understand the industry standards of coding on SmartPy and b
 
 # Prerequisites
 
-To complete this tutorial, you will need a basic understanding of the Python programming language. Everything else will be explained, from getting XTZ from the faucet to coding and deployment.
-
+To complete this tutorial, you will need a basic understanding of the Python programming language ans a know-how of how to write and deploy Tezos Contracts.
+I will suggest you take a look at this [Tutorial](https://learn.figment.io/tutorials/using-the-smartpy-ide-to-deploy-tezos-smart-contracts) first.
 
 # Requirements
+Any modern Browser!
 
-You will need to have Temple Wallet Installed in your browser. Get it from https://templewallet.com/
+
+# Smart Contract
+Before we go to the depths of testing the contract , we need to first have a sample contract which is complex enough so that we can understand it's testing.
+
+Below I have taken a simple time based Escrow Contract : 
+
+___CODE___
+
+The above code is 
 
 
 # SmartPy IDE
