@@ -19,10 +19,117 @@ Any modern Browser!
 Before we go to the depths of testing the contract , we need to first have a sample contract which is complex enough so that we can understand it's testing.
 
 Below I have taken a simple time based Escrow Contract : 
+```python
+import smartpy as sp
 
-___CODE___
+class Escrow(sp.Contract):
+    def __init__(self, owner, fromOwner, counterparty, fromCounterparty, epoch, hashedSecret):
+        self.init(fromOwner           = fromOwner,
+                  fromCounterparty    = fromCounterparty,
+                  balanceOwner        = sp.tez(0),
+                  balanceCounterparty = sp.tez(0),
+                  hashedSecret        = hashedSecret,
+                  epoch               = epoch,
+                  owner               = owner,
+                  counterparty        = counterparty)
 
-The above code is 
+    @sp.entry_point
+    def addBalanceOwner(self):
+        sp.verify(self.data.balanceOwner == sp.tez(0))
+        sp.verify(sp.amount == self.data.fromOwner)
+        self.data.balanceOwner = self.data.fromOwner
+
+    @sp.entry_point
+    def addBalanceCounterparty(self):
+        sp.verify(self.data.balanceCounterparty == sp.tez(0))
+        sp.verify(sp.amount == self.data.fromCounterparty)
+        self.data.balanceCounterparty = self.data.fromCounterparty
+
+    def claim(self, identity):
+        sp.verify(sp.sender == identity)
+        sp.send(identity, self.data.balanceOwner + self.data.balanceCounterparty)
+        self.data.balanceOwner = sp.tez(0)
+        self.data.balanceCounterparty = sp.tez(0)
+
+    @sp.entry_point
+    def claimCounterparty(self, params):
+        sp.verify(sp.now < self.data.epoch)
+        sp.verify(self.data.hashedSecret == sp.blake2b(params.secret))
+        self.claim(self.data.counterparty)
+
+    @sp.entry_point
+    def claimOwner(self):
+        sp.verify(self.data.epoch < sp.now)
+        self.claim(self.data.owner)
+```
+
+An Escrow contract acts as a security between two untrusting parties whenever there is an amount involved.
+A task and a deadline is agreed upon and both parties stake some amount **fromOwner** and **fromCounterparty**.In this case we have **owner** and **counterParty** as the two parties and the latter can claim the amount till the deadline **time** does not expire. Once the deadline has expired and if the **counterParty** hasn't claimed the amount yet then **owner** can claim all the amount. 
+A secret code is hashed and stored in the contract which acts as the password for the **counterParty** and is revealed to the **counterParty** only after the agreed upon task is completed making sure that both parties are serious about the task!
+
+Now a contract of such high importance must be iron-clad and no bug should allow either of the parties to claim the amount before the specified task is completed. Hence the need for testing it extensively arises.
+
+# Test Scenarios
+In SmartPy we can simulate all kinds of transaction possibilities and test out our contract without having to spend a single XTZ.
+
+To implement testinf we must examine the concept of **test scenarios** :
+
+Test scenarios are an important tool to make sure our smart contracts are working correctly.
+- A new test is a method marked with `@sp.add_test`
+- A new scenario is instantiated by `sp.test_scenario`.
+- Scenarios describe a sequence of actions: originating contracts, computing expressions or calling entry points, etc.
+- In the online editor of SmartPy.io, the scenario is computed and then displayed as an HTML document on the output panel.
+
+Let's start by defining a method named `test()`:
+
+```python
+@sp.add_test(name = "Escrow")
+    def test():
+        pass
+```
+Now we need to instantiate (also known as originate) our smart contract and create a test scenario:
+
+```python
+@sp.add_test(name = "Escrow")
+def test():
+    scenario = sp.test_scenario()
+    scenario.h1("Escrow")
+```
+
+# Test Accounts
+
+Test Accounts are unique dummy accounts provided to us via SmartPy library so that we can simulate real-world user accounts which will interact with our contract.
+It is instatiated the following way:
+
+```python
+bob = sp.test_account("Bob")
+udit = sp.test_account("Udit")
+```
+The string parameter acts like a seed phrase so that no two test accounts are same.
+
+Test Accounts have the following properties for us to use:
+- *admin*.address
+- *admin*.public_key_hash
+- *admin*.public_key
+- *admin*.secret_key
+
+These represent the values that the user will have in their account. For us the most important is their **Address**.
+
+# Originating a Contract
+Now we have the two parties of the Escrow contract namely **bob** and **udit** and we are ready to Originate our contract in our **test scenario**.
+According to our contract above we need the following parameters:
+- Owner (bob)
+- Counter Party (udit)
+- Owner's Stake
+- Counter Party's Stake
+- Time Limit
+- Secret
+
+```python
+hashSecret = sp.blake2b(sp.bytes("0x01223344"))
+ob = Escrow(bob.address, sp.tez(50), udit.address, sp.tez(4), sp.timestamp(), hashSecret)
+```
+
 
 
 # SmartPy IDE
