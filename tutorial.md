@@ -35,31 +35,33 @@ class Escrow(sp.Contract):
 
     @sp.entry_point
     def addBalanceOwner(self):
-        sp.verify(self.data.balanceOwner == sp.tez(0))
-        sp.verify(sp.amount == self.data.fromOwner)
+        sp.verify(self.data.owner == sp.sender , "Wrong Owner")
+        sp.verify(self.data.balanceOwner == sp.tez(0) , "There is already some stake")
+        sp.verify(sp.amount == self.data.fromOwner , "Only the stake amount is allowed")
         self.data.balanceOwner = self.data.fromOwner
 
     @sp.entry_point
     def addBalanceCounterparty(self):
-        sp.verify(self.data.balanceCounterparty == sp.tez(0))
-        sp.verify(sp.amount == self.data.fromCounterparty)
+        sp.verify(self.data.counterparty == sp.sender , "Wrong CounterParty")
+        sp.verify(self.data.balanceCounterparty == sp.tez(0) , "There is already some stake")
+        sp.verify(sp.amount == self.data.fromCounterparty , "Only the stake amount is allowed")
         self.data.balanceCounterparty = self.data.fromCounterparty
 
     def claim(self, identity):
-        sp.verify(sp.sender == identity)
+        sp.verify(sp.sender == identity , "Wrong Identity. Internal call only")
         sp.send(identity, self.data.balanceOwner + self.data.balanceCounterparty)
         self.data.balanceOwner = sp.tez(0)
         self.data.balanceCounterparty = sp.tez(0)
 
     @sp.entry_point
     def claimCounterparty(self, params):
-        sp.verify(sp.now < self.data.epoch)
-        sp.verify(self.data.hashedSecret == sp.blake2b(params.secret))
+        sp.verify(sp.now < self.data.epoch , "Time limit expired")
+        sp.verify(self.data.hashedSecret == sp.blake2b(params.secret) , "Wrong Secret Key")
         self.claim(self.data.counterparty)
 
     @sp.entry_point
     def claimOwner(self):
-        sp.verify(self.data.epoch < sp.now)
+        sp.verify(self.data.epoch < sp.now , "Time Limit not yet reached")
         self.claim(self.data.owner)
 ```
 
@@ -126,7 +128,7 @@ According to our contract above we need the following parameters:
 - Secret
 
 ```python
-s=sp.pack("SECRETKEY") #String to Bytes
+s = sp.pack("SECRETKEY") #String to Bytes
 secret = sp.blake2b(s) #Hashing bytes to secret key
 ob = Escrow(bob.address, sp.tez(25), udit.address, sp.tez(5), sp.timestamp(1634753427), secret)
 scenario += ob
@@ -134,21 +136,11 @@ scenario += ob
 Now in our **test scenario** we have added a Smart Contract between two users (bob and udit) with each of them staking 50 XTZ and 5 XTZ respectively with a deadline of 20th October 2021 and a hashed secret key
 
 > You can read up on Human Date to Epoch Timestamp conversion [HERE](https://www.epochconverter.com/).
+
 > I have used blake2b as my cryptographic hash function. Read more about it [HERE](https://www.blake2.net/)
 
 # Run Method
 As we know that we can directly call our contract's EntryPoints using the ```.``` operator like ```ob.addBalanceOwner()``` but to simulate the intricate parameters of a real world transaction we user the ```.run()``` method which has the following parameters :
-
-- sender          
-- source          
-- amount         
-- now          
-- level   
-- chain_id   
-- voting_powers 
-- valid        
-- show     
-- exception
 
 Parameter | Function
 --------- | --------
@@ -166,7 +158,9 @@ exception | If we expect a transaction to fail then we can also specify the expe
 For our tutorial we will be focusing on the ```sender``` , ```amount```, ```now```, ```valid``` , ```show``` parameters.
 
 # Unit Tests
-To test 
+Now we need to create transactions which would test all the functionalities of our contract. My advice here is to proceed by isolating an EntryPoint and then testing all it's variables and then moving on to the next EntryPoint:
+
+- 
 
 # Conclusion
 
