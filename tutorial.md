@@ -87,7 +87,7 @@ Let's start by defining a method named `test()`:
     def test():
         pass
 ```
-Now we need to instantiate (also known as originate) our smart contract and create a test scenario:
+Now we need to create a test scenario:
 
 ```python
 @sp.add_test(name = "Escrow")
@@ -119,16 +119,49 @@ These represent the values that the user will have in their account. For us the 
 Now we have the two parties of the Escrow contract namely **bob** and **udit** and we are ready to Originate our contract in our **test scenario**.
 According to our contract above we need the following parameters:
 - Owner (bob)
-- Counter Party (udit)
 - Owner's Stake
+- Counter Party (udit)
 - Counter Party's Stake
 - Time Limit
 - Secret
 
 ```python
-hashSecret = sp.blake2b(sp.bytes("0x01223344"))
-ob = Escrow(bob.address, sp.tez(50), udit.address, sp.tez(4), sp.timestamp(), hashSecret)
+s=sp.pack("SECRETKEY") #String to Bytes
+secret = sp.blake2b(s) #Hashing bytes to secret key
+ob = Escrow(bob.address, sp.tez(25), udit.address, sp.tez(5), sp.timestamp(1634753427), secret)
+scenario += ob
 ```
+Now in our **test scenario** we have added a Smart Contract between two users (bob and udit) with each of them staking 50 XTZ and 5 XTZ respectively with a deadline of 20th October 2021 and a hashed secret key
+
+> You can read up on Human Date to Epoch Timestamp conversion [HERE](https://www.epochconverter.com/).
+> I have used blake2b as my cryptographic hash function. Read more about it [HERE](https://www.blake2.net/)
+
+# Run Method
+As we know that we can directly call our contract's EntryPoints using the ```.``` operator like ```ob.addBalanceOwner()``` but to simulate the intricate parameters of a real world transaction we user the ```.run()``` method which has the following parameters :
+
+- sender          =  # TAddress
+- source          =  # TAddress
+- amount          =  # TMutez
+- now             =  # TTimestamp
+- level           =  # TNat
+- chain_id        =  # TChainId
+- voting_powers   =  # Dict(TKeyHash, TNat)
+- valid           =  # True | False
+- show            =  # True | False
+- exception       =  # any
+
+Parameter | Function
+--------- | --------
+sender | It simulates the user who is sending the transaction to the contract. Sets the value of ```sp.sender```
+source | It simulates the source of the transaction. Sets the value of ```sp.source```
+amount | It simulates the amount sent by the user in the transaction. Sets the value of ```sp.amount```
+now | It simulates the timestamp of the transaction. Sets the value of ```sp.now```
+level | It simulates the block level of the transaction. Sets the value of ```sp.level```
+chain_id | It simulates the chain_id of the transaction. Sets the value of ```sp.chain_id```
+voting_powers | It simulates the voting power of different users in the contract's implementaion. It is a dictionary. Sets the value of ```sp.voting_power```
+valid | If we expect a transaction to fail i.e. testing out edge cases we put this parameter as **FALSE** so that the compiler won't throw an error
+show | If we do not want to show a transaction in the HTML Output we set this parameter as **FALSE** 
+exception | If we expect a transaction to fail then we can also specify the expected exception that it will raise. **Valid** must be **False**
 
 
 
