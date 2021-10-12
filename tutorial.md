@@ -8,7 +8,7 @@ Hey Reader! Welcome to this Tutorial on Testing a smart contract on Tezos in Sma
 
 # Prerequisites
 
-To complete this tutorial, you will need a basic understanding of the Python programming language ans a know-how of how to write and deploy Tezos Contracts.
+To complete this tutorial, you will need a basic understanding of the Python programming language and a know-how of how to write and deploy Tezos Contracts.
 I will suggest you take a look at this [Tutorial](https://learn.figment.io/tutorials/using-the-smartpy-ide-to-deploy-tezos-smart-contracts) first.
 
 # Requirements
