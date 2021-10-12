@@ -163,7 +163,7 @@ For our tutorial we will be focusing on the ```sender``` , ```amount```, ```now`
 We write all our verifying conditions in the contract and create transactions which would test all the functionalities of our contract. 
 My advice here is to proceed by isolating an EntryPoint and then testing all it's variables and then moving on to the next EntryPoint:
 
-- ```addBalanceOwner()```
+## ```addBalanceOwner()```
 ```python
 #addBalanceOwner Tests
 ob.addBalanceOwner().run(sender=udit , amount = sp.tez(25) , valid = False)
@@ -179,7 +179,7 @@ ob.addBalanceOwner().run(sender = bob , amount = sp.tez(25) , valid = False)
 3. The third transaction has both the owner and stake amount correct and we expect it to be a valid transaction.
 4. In the fourth transaction evn though all the parameters are correct , the owner has already staked once in the contract and can not stake again. Hence, we expect our transaction to fail and have **valid** set as **False**.
 
-- ```addBalanceCounterparty()```
+## ```addBalanceCounterparty()```
 ```python
 #addBalanceCounterparty Tests
 ob.addBalanceCounterparty().run(sender=bob , amount = sp.tez(5) , valid = False)
@@ -195,7 +195,7 @@ ob.addBalanceCounterparty().run(sender = udit, amount = sp.tez(5) , valid = Fals
 3. The third transaction has both the counter party and stake amount correct and we expect it to be a valid transaction.
 4. In the fourth transaction evn though all the parameters are correct , the counter arty has already staked once in the contract and can not stake again. Hence, we expect our transaction to fail and have **valid** set as **False**.
 
-- ```claimCounterparty()```
+## ```claimCounterparty()```
 ```python
 #claimCounterparty Tests
 ob.claimCounterparty(secret = s).run(sender = bob , valid = False)
@@ -211,7 +211,7 @@ ob.claimCounterparty(secret = s).run(sender = udit)
 3. The third transaction has both the counter party and secret key correct but the timestamp is for 25th October 2021 which is past our deadline set during origination.
 4. The fourth transaction has everything in order and hence is a valid transaction.
 
-- ```claimOwner()```
+## ```claimOwner()```
 ```python
 #claimOwner Tests
 ob.claimOwner().run(sender = udit , valid = False)
