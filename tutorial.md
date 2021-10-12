@@ -378,18 +378,18 @@ def test():
 
 # Conclusion
 
-In this Tutorial we learned about coding in SmartPy, how to get testnet XTZ from the faucet, how to deploy a contract on the blockchain and how to interact with the contract using a block explorer. We also saw how our entrypoints can change a contract's storage.
+In this Tutorial we learned about how to test , verify and debug smart contracts before deploying them to the real world.
 
 # Next Steps
 
-I would like for you to try out all the entrypoints that we have created and check what changes they make to the storage! Once you are comfortable with this basic contract you can go about creating more complex contracts, NFT tokens and much more.
+I would like for you to make your own contracts and test all their EntryPoints , Storage and make sure they are perfect before deploying them to the chain.
 
 # About The Author
 
-This tutorial was written by Udit Kapoor, who is a Tezos India 2.0 Fellow and a blockchain enthusiast. Their signature project is CryptoWill and they like to dabble in Flutter as well! Reach out to Udit on [GitHub](https://github.com/Udit-Kapoor) and you can find them on Discord as user **pichkari#56**.
+This tutorial was written by Udit Kapoor, who is a Tezos India 2.0 Fellow and a blockchain enthusiast. Their signature project is CryptoWill and they like to dabble in Flutter as well! Reach out to Udit on [GitHub](https://github.com/Udit-Kapoor).
 
 # References
 
-- Calculator example code from SmartPy.io
-- [OpenTezos](https://opentezos.com/)
+- Escrow example code from SmartPy.io
+- [SmartPy Docs](https://smartpy.io/docs/)
 
