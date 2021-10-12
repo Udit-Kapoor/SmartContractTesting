@@ -171,7 +171,7 @@ ob.addBalanceOwner().run(sender = bob, amount = sp.tez(25))
 
 ob.addBalanceOwner().run(sender = bob , amount = sp.tez(25) , valid = False)
 ```
-###Faults
+### Faults
 1. In the first transaction we are sending **udit** as the **sender** who we have set as **CounterParty**. Hence, we expect our transaction to fail and have **valid** set as **False**.
 2. In the second transaction we are sending ```sp.tez(1)``` as the owner's stake which we have set as 25 XTZ. Hence, we expect our transaction to fail and have **valid** set as **False**.
 3. The third transaction has both the owner and stake amount correct and we expect it to be a valid transaction.
@@ -187,7 +187,7 @@ ob.addBalanceCounterparty().run(sender = udit, amount = sp.tez(5))
 
 ob.addBalanceCounterparty().run(sender = udit, amount = sp.tez(5) , valid = False)
 ```
-###Faults
+### Faults
 1. In the first transaction we are sending **bob** as the **sender** who we have set as **Owner**. Hence, we expect our transaction to fail and have **valid** set as **False**.
 2. In the second transaction we are sending ```sp.tez(25)``` as the counter party's stake which we have set as 5 XTZ. Hence, we expect our transaction to fail and have **valid** set as **False**.
 3. The third transaction has both the counter party and stake amount correct and we expect it to be a valid transaction.
@@ -203,7 +203,7 @@ ob.claimCounterparty(secret = s).run(sender = udit , now = sp.timestamp(16351921
  
 ob.claimCounterparty(secret = s).run(sender = udit)
 ```
-###Faults
+### Faults
 1. In the first transaction we are sending bob as the **sender** who is not the counter party. Hence, we expect our transaction to fail and have **valid** set as **False**.
 2. In the second transaction we are sending the wrong secret key. Hence, we expect our transaction to fail and have **valid** set as **False**.
 3. The third transaction has both the counter party and secret key correct but the timestamp is for 25th October 2021 which is past our deadline set during origination.
@@ -218,13 +218,60 @@ ob.claimOwner().run(sender = bob, valid=False)
  
 ob.claimOwner().run(sender = bob ,now = sp.timestamp(1635192186) )
 ```
-###Faults
+### Faults
 1. In the first transaction we are sending udit as the **sender** who is not the owner. Hence, we expect our transaction to fail and have **valid** set as **False**.
 2. The second transaction has the correct **sender** but the time limit has not yet expired. Hence, we expect our transaction to fail and have **valid** set as **False**.
 3. The third transaction has everything in order and hence is a valid transaction with the timestamp simulated as of 25th October 2021.
 
+# Accessing Contract Data
+We can also access a lot of parameters associated with the contract using the ```.``` operator like ```ob.data```. We have the following options : 
+- *ob*.data
+- *ob*.balance
+- *ob*.baker
+- *ob*.address
 
-#Final Code
+Parameter | Function
+--------- | --------
+data | Fetches contract's storage 
+balance | Fetches contract's balance amount in XTZ
+baker | Fetches contract's optional delegated baker
+address | Fetches contract's deployed address within the scenario
+
+# Scenario Methods
+The scenario we made in the above tutorial also provides us with various tools to verify , compute and show in HTML Output.
+
+### Verify
+We can verify all the parameters of our storage or any condition using **verify** method.
+```python
+scenario.verify(ob.data.owner == bob.address)
+```
+
+### Compute
+Using **compute** we perform calculations and store them in local variable inside the scenario.
+```python
+x = scenario.compute(ob.data.fromOwner + sp.tez(15))
+```
+
+### Show
+**show** method is used to add expressions which are not transactions into the HTML Output. This will compute the expression and add it to our output panel
+```python
+scenario.show(ob.data)
+scenario.show(ob.data.fromOwner + sp.tez(15))
+```
+
+### HTML Tags
+We are also provided with 6 levels of headings in our scenario so that we can beautify and segregate our output panel.
+```python
+scenario.h1("title")
+scenario.h2("subtitle")
+scenario.h3('<h3> HTML tag.')
+scenario.h4(" <h4> HTML tag.")
+scenario.p("<p> HTML tag.")
+```
+
+Now that we have completed the in depths of testing our smart contract we are ready to deploy it in the real world and have real users interact with it.
+
+# Final Code
 ```python
 import smartpy as sp
 
@@ -322,6 +369,11 @@ def test():
 
  
     ob.claimOwner().run(sender = bob ,now = sp.timestamp(1635192186) )
+
+    scenario.verify(ob.data.owner == bob.address)
+    x = scenario.compute(ob.data.fromOwner + sp.tez(15))
+    scenario.show(ob.data)
+    scenario.show(ob.data.fromOwner + sp.tez(15))
 ```
 
 # Conclusion
