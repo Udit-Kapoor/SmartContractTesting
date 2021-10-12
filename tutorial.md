@@ -66,7 +66,9 @@ class Escrow(sp.Contract):
 ```
 
 An Escrow contract acts as a security between two untrusting parties whenever there is an amount involved.
-A task and a deadline is agreed upon and both parties stake some amount **fromOwner** and **fromCounterparty**.In this case we have **owner** and **counterParty** as the two parties and the latter can claim the amount till the deadline **time** does not expire. Once the deadline has expired and if the **counterParty** hasn't claimed the amount yet then **owner** can claim all the amount. 
+A task and a deadline is agreed upon and both parties stake some amount **fromOwner** and **fromCounterparty**.
+In this case we have **owner** and **counterParty** as the two parties and the latter can claim the amount till the deadline **time** does not expire.
+Once the deadline has expired and if the **counterParty** hasn't claimed the amount yet then **owner** can claim all the amount. 
 A secret code is hashed and stored in the contract which acts as the password for the **counterParty** and is revealed to the **counterParty** only after the agreed upon task is completed making sure that both parties are serious about the task!
 
 Now a contract of such high importance must be iron-clad and no bug should allow either of the parties to claim the amount before the specified task is completed. Hence the need for testing it extensively arises.
